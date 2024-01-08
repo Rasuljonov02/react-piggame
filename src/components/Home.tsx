@@ -5,7 +5,7 @@ import dice3 from "./img/dice3.png";
 import dice4 from "./img/dice4.png";
 import dice5 from "./img/dice5.png";
 import dice6 from "./img/dice6.png";
-
+// import select from "./img/select.jpeg";
 
 interface PiggieState {
   scores: number[];
@@ -92,33 +92,35 @@ export default class Piggie extends React.Component<{}, PiggieState> {
   };
 
   switchPlayer = () => {
-    const { activePlayer } = this.state;
+			const { activePlayer } = this.state;
 
-    if (this.current0El && this.current1El) {
-      (document.getElementById(`current--${activePlayer}`) as HTMLElement).textContent = '0';
-      this.setState({
-        currentScore: 0,
-        activePlayer: activePlayer === 0 ? 1 : 0,
-      });
+			if (this.current0El && this.current1El) {
+					(document.getElementById(`current--${activePlayer}`) as HTMLElement).textContent = '0';
+					this.setState({
+							currentScore: 0,
+							activePlayer: activePlayer === 0 ? 1 : 0,
+					});
 
-      if (this.player0El && this.player1El) {
-        this.player0El.classList.toggle('player--active');
-        this.player1El.classList.toggle('player--active');
-      }
-    }
-  };
+					if (this.player0El && this.player1El) {
+							this.player0El.classList.toggle('player--active');
+							this.player1El.classList.toggle('player--active');
+					}
+			}
+	};
 
-		handleRollClick = () => {
+	handleRollClick = () => {
 			const { playing, activePlayer, currentScore } = this.state;
 
 			if (playing && this.diceEl) {
-					const dice = Math.trunc(Math.random() * 6) + 1;
-					this.diceEl.classList.remove('hidden');
-					this.diceEl.src = `dice${dice}.png`;
+					const diceImages = [dice1, dice2, dice3, dice4, dice5, dice6];
+					const diceIndex = Math.floor(Math.random() * 6);
 
-					if (dice !== 1) {
+					this.diceEl.classList.remove('hidden');
+					this.diceEl.src = diceImages[diceIndex];
+
+					if (diceIndex + 1 !== 1) {
 							this.setState({
-									currentScore: currentScore + dice,
+									currentScore: currentScore + diceIndex + 1,
 							});
 					} else {
 							this.switchPlayer();
@@ -126,82 +128,82 @@ export default class Piggie extends React.Component<{}, PiggieState> {
 			}
 	};
 
-  handleHoldClick = () => {
-    const { playing, activePlayer, currentScore, scores } = this.state;
+	handleHoldClick = () => {
+			const { playing, activePlayer, currentScore, scores } = this.state;
 
-    if (playing) {
-      scores[activePlayer] += currentScore;
+			if (playing) {
+					scores[activePlayer] += currentScore;
 
-      if (this.score0El && this.score1El) {
-        (this.score0El as HTMLElement).textContent = `${scores[0]}`;
-        (this.score1El as HTMLElement).textContent = `${scores[1]}`;
-      }
+					if (this.score0El && this.score1El) {
+							(this.score0El as HTMLElement).textContent = `${scores[0]}`;
+							(this.score1El as HTMLElement).textContent = `${scores[1]}`;
+					}
 
-      if (scores[activePlayer] >= 100) {
-        this.setState({
-          playing: false,
-        });
+					if (scores[activePlayer] >= 100) {
+							this.setState({
+									playing: false,
+							});
 
-        if (this.diceEl && this.player0El && this.player1El) {
-          this.diceEl.classList.add('hidden');
-          document.querySelector(`.player--${activePlayer}`)?.classList.add('player--winner');
-          document.querySelector(`.player--${activePlayer}`)?.classList.remove('player--active');
-        }
-      } else {
-        this.switchPlayer();
-      }
-    }
-  };
+							if (this.diceEl && this.player0El && this.player1El) {
+									this.diceEl.classList.add('hidden');
+									document.querySelector(`.player--${activePlayer}`)?.classList.add('player--winner');
+									document.querySelector(`.player--${activePlayer}`)?.classList.remove('player--active');
+							}
+					} else {
+							this.switchPlayer();
+					}
+			}
+	};
 
-  handleNewClick = () => {
-    this.init();
-  };
+	handleNewClick = () => {
+			this.init();
+	};
 
-  render() {
-    return (
-      <div className=" w-full h-[100vh] grid place-items-center bg-slate-400">
-        <main>
-          <section className="player player--0 player--active">
-            <h2 className="name" id="name--0">
-              Player 1
-            </h2>
-            <p className="score" id="score--0">
-              43
-            </p>
-            <div className="current">
-              <p className="current-label">Current</p>
-              <p className="current-score" id="current--0">
-                0
-              </p>
-            </div>
-          </section>
-          <section className="player player--1">
-            <h2 className="name" id="name--1">
-              Player 2
-            </h2>
-            <p className="score" id="score--1">
-              24
-            </p>
-            <div className="current">
-              <p className="current-label">Current</p>
-              <p className="current-score" id="current--1">
-                0
-              </p>
-            </div>
-          </section>
+	render() {
+			return (
+					<div className=" w-full h-[100vh] grid place-items-center bg-slate-400">
+							<main>
+									<section className="player player--0 player--active">
+											<h2 className="name" id="name--0">
+													Player 1
+											</h2>
+											<p className="score" id="score--0">
+													0
+											</p>
+											<div className="current">
+													<p className="current-label">Current</p>
+													<p className="current-score" id="current--0">
+															0
+													</p>
+											</div>
+									</section>
+									<section className="player player--1">
+											<h2 className="name" id="name--1">
+													Player 2
+											</h2>
+											<p className="score" id="score--1">
+													0
+											</p>
+											<div className="current">
+													<p className="current-label">Current</p>
+													<p className="current-score" id="current--1">
+															0
+													</p>
+											</div>
+									</section>
 
-          <img src={dice5} alt="Playing dice" className="dice" />
-          <button className="btn btn--new" onClick={this.handleNewClick}>
-            🔄 New game
-          </button>
-          <button className="btn btn--roll" onClick={this.handleRollClick}>
-            🎲 Roll dice
-          </button>
-          <button className="btn btn--hold" onClick={this.handleHoldClick}>
-            📥 Hold
-          </button>
-        </main>
-      </div>
-    );
-  }
+									<img src={dice1} alt="Playing dice" className="dice" />
+									<button className="btn btn--new" onClick={this.handleNewClick}>
+											🔄 New game
+									</button>
+									<button className="btn btn--roll" onClick={this.handleRollClick}>
+											🎲 Roll dice
+									</button>
+									<button className="btn btn--hold" onClick={this.handleHoldClick}>
+											📥 Hold
+									</button>
+							</main>
+					</div>
+			);
+	}
 }
